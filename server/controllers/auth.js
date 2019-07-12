@@ -36,17 +36,13 @@ exports.login = async (req, res) => {
 			if (!user) {
 				throw new Error();
 			}
-			console.log(password);
-			console.log(user.password)
-			console.log(await comparePassword(password, user.password));
 			if (await comparePassword(password, user.password)) {
 				const token = jwt.sign({ id: user.id }, jwtOptions.secretOrKey);
-				console.log('done')
-				
 				res.json({
+					redirect: "/home",
 					token,
 					status: true,
-					redirect: "home"
+					
 				});
 				
 			} else {
@@ -72,9 +68,10 @@ exports.signup = async (req, res) => {
 		if (user) {
 			const token = jwt.sign({ id: user.id }, jwtOptions.secretOrKey );
 			
-			res.redirect('/login');
+			
 			res.json({
-				token
+				token,
+				redirect: '/home'
 				});
 		} else {
 			throw new Error();
@@ -85,5 +82,6 @@ exports.signup = async (req, res) => {
 };
 
 exports.logout = (req, res) => {
+	//todo logout
 	res.redirect('/login');
 };
