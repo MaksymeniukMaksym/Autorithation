@@ -11,9 +11,9 @@ const {
 	signup
 } = require('../controllers/auth');
 
-router.get('/home', passport.authenticate('jwt', { session: false }), getHomePage);
+router.get('/home',  getHomePage);
 
-router.get('/getUserName', passport.authenticate('jwt', { session: false }), getUserName);
+router.get('/getUserName',passport.authenticate('jwt', { session: false }),  getUserName);
 
 router.get('/login', getLoginPage);
 

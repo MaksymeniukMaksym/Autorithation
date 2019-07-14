@@ -1,6 +1,11 @@
 const jwt = require('jsonwebtoken');
 const { hashPassword, comparePassword } = require('../services/hash.service');
 const { getUser, createUser } = require('../services/user.service');
+const path = require('path')
+
+const getView = (name) => {
+	return path.join(__dirname, `../views/${name}.html`)
+}
 
 const passportJWT = require('passport-jwt');
 const ExtractJwt = passportJWT.ExtractJwt;
@@ -10,19 +15,20 @@ jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 jwtOptions.secretOrKey = 'secretkey';
 
 exports.getHomePage = (req, res) => {
-	res.render('home.html');
+	res.sendFile(getView('home'));
 };
 
 exports.getLoginPage = (req, res) => {
-	res.render('login.html');
+	res.sendFile(getView('login'));
 };
 
 exports.getSignupPage = (req, res) => {
-	res.render('signup.html');
+	res.sendFile(getView('signup'));
 };
 
-exports.getUserName = (req, res) => {
-	const { name } = req.user;
+exports.getUserName = async (req, res) => {
+
+	const { name }  = req.user;
 	res.json({ name });
 };
 
@@ -37,9 +43,9 @@ exports.login = async (req, res) => {
 				throw new Error();
 			}
 			if (await comparePassword(password, user.password)) {
+		
 				const token = jwt.sign({ id: user.id }, jwtOptions.secretOrKey);
 				res.json({
-					redirect: "/home",
 					token,
 					status: true,
 					
@@ -58,6 +64,8 @@ exports.login = async (req, res) => {
 	}
 };
 
+
+
 exports.signup = async (req, res) => {
 	const { name, password } = req.body;
 
@@ -65,13 +73,14 @@ exports.signup = async (req, res) => {
 		const hash = await hashPassword(password);
 		const user = await createUser({ name, password: hash });
 
+		console.log(name, password)
+
 		if (user) {
 			const token = jwt.sign({ id: user.id }, jwtOptions.secretOrKey );
 			
 			
 			res.json({
-				token,
-				redirect: '/home'
+				token
 				});
 		} else {
 			throw new Error();
