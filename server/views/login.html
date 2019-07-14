@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link href="/css/style.css" type="text/css" rel="stylesheet" />
+	<title>Вхід</title>
+	<meta charset="utf-8" />
+</head>
+
+<body>
+	<ul class="menu-main">
+		<li><a href="/signup">Register</a></li>
+		<li><a href="/login" class="current">Login</a></li>
+	</ul>
+	<div>
+		<h1>Вхід</h1>
+		<form method="post" id="form">
+			<label>Логин</label><br />
+			<input type="text" name="name" required /><br /><br />
+			<label>Пароль</label><br />
+			<input type="password" name="password" required autocomplete="on" /><br /><br />
+			<button class="submit-button" type="submit">Send</button>
+		</form>
+	</div>
+
+	<div id="log" class="message">Invalid</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
+	<script>
+		(() => {
+
+			if (localStorage.getItem("token") !== null) {
+						window.location.href = 'home.html';
+			}
+
+
+
+			document.querySelector('#form').addEventListener('submit', event => {
+				event.preventDefault();
+
+				run(event.target);
+			});
+
+
+			async function run(form) {
+				const name = form[0].value;
+				const password = form[1].value;
+
+				const userData = {
+					name,
+					password
+				};
+
+				const response = await axios.post('http://localhost:3000/login', userData);
+
+				const { data } = response;
+
+				if (!!data.status) {
+					if (!!data.token) {
+
+						const token = data.token;
+						localStorage.setItem("token", token);
+
+						window.location = "home.html";
+					}
+				} else {
+					console.log("oy shit here we go again");
+
+					const logelement = document.querySelector('#log');
+
+					logelement.style.display = 'block';
+					logelement.textContent = 'Invalid';
+				}
+
+				// 		const data = JSON.parse(xhr.responseText);
+				// 		if (!!data) {
+				// 		
+				// 		}
+				// 		if (!data.status) {
+				// 			logelement.style.display = 'block';
+				// 			logelement.textContent = 'Invalid';
+				// 		} else {
+				// 			logelement.style.display = 'none';
+
+				// 			if (!!data.redirect) {
+				// 				await axios.get('http://localhost:3000/login');
+				// 			}
+
+				// 		}
+				// 	} catch (e) {}
+				// } else if (xhr.status >= 400)
+				// 	log.textContent = 'Please check your internet connection';
+			};
+
+		})();
+	</script>
+</body>
+
+</html>
