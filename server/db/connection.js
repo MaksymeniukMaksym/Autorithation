@@ -3,6 +3,7 @@ const Sequelize = require('sequelize');
 const sequelize = new Sequelize({
 	database: 'node_db',
 	username: 'maks',
+	host: '127.0.0.1',
 	password: 'Maks3226',
 	dialect: 'mysql'
 });
