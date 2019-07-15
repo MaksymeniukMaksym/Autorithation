@@ -11,7 +11,7 @@
 	<body>
 		<ul class="menu-main">
 			<li><a href="/home" class="current">Home</a></li>
-			<li><button  id="logout">Logout</button></li>
+			<li><a id="logout">Logout</a></li>
 		</ul>
 
 		<div>
@@ -42,7 +42,7 @@
 
 				document.querySelector('#logout').onclick = () => {
 					localStorage.removeItem("token");
-					window.location.href = ('login.html');
+					window.location.href = ('login');
 					
 				}
 
