@@ -90,7 +90,3 @@ exports.signup = async (req, res) => {
 	}
 };
 
-exports.logout = (req, res) => {
-	//todo logout
-	res.redirect('/login');
-};
