@@ -9,3 +9,7 @@ exports.getUser = async id => {
 		where: id
 	});
 };
+
+exports.checkUser = async ( name ) => {
+	return await User.findOne({where: { name }})
+  };
