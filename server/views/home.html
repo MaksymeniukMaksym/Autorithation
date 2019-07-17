@@ -1,53 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<link href="/css/style.css" type="text/css" rel="stylesheet" />
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-		<title>Document</title>
-	</head>
 
-	<body>
-		<ul class="menu-main">
-			<li><a href="/home" class="current">Home</a></li>
-			<li><a id="logout">Logout</a></li>
-		</ul>
+<head>
+	<link href="/css/style.css" type="text/css" rel="stylesheet" />
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>Home</title>
+</head>
 
-		<div>
-			<h1 id="user-name-container">Hello </h1>
-		</div>
+<body>
+	<ul class="menu-main">
+		<li><a href="/home" class="current">Home</a></li>
+		<li><a id="logout">Logout</a></li>
+	</ul>
 
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
-		<script>
-			(() => {
-				const run= async () => {
-					const token = localStorage.getItem('token');
+	<div>
+		<h1 id="user-name-container">Hello</h1>
+	</div>
 
-					if (token === null) {
-						window.location.href = 'login';
-					}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
+	<script>
+		(() => {
+			const run = async () => {
+				const token = localStorage.getItem('token');
 
-					const response = await axios.get('http://localhost:3000/getUserName', {
-							'headers': { 'Authorization': `bearer ${token}` }
-					});
+				const response = await axios.get('http://localhost:3000/getUserName', {
+					'headers': { 'Authorization': `bearer ${token}` }
+				});
 
-					const { name } = response.data;
+				const { name } = response.data;
 
-					const userNameContainer = document.querySelector("#user-name-container")
-				
-					userNameContainer.innerHTML = `Hello ${name}`;
-					
-				}
+				const userNameContainer = document.querySelector("#user-name-container")
 
-				document.querySelector('#logout').onclick = () => {
-					localStorage.removeItem("token");
-					window.location.href = ('login');
-					
-				}
+				userNameContainer.innerHTML = `Hello ${name}`;
 
-				run();
-			})();
-		</script>
-	</body>
+			}
+
+			document.querySelector('#logout').onclick = () => {
+				localStorage.removeItem("token");
+				window.location.href = ('login');
+			}
+			run();
+		})();
+	</script>
+</body>
+
 </html>

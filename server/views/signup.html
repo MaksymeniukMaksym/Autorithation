@@ -1,80 +1,72 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<link href="/css/style.css" type="text/css" rel="stylesheet" />
-		<title>Регистрация</title>
-		<meta charset="utf-8" />
-	</head>
 
-	<body>
-		<ul class="menu-main">
-			<li><a href="/signup" class="current">Register</a></li>
-			<li><a href="/login">Login</a></li>
-		</ul>
-		<div>
-			<h1>Регистрация</h1>
-			<form id="form" method="post">
-				<label>Логин</label><br />
-				<input
-					type="text"
-					name="name"
-					required
-					pattern="[0-9a-zA-Z]{4,8}"
-					title="Enter a nickname consisting of 4-8 characters"
-				/><br /><br />
-				<label>Пароль</label><br />
-				<input
-					type="password"
-					name="password"
-					required
-					pattern="[0-9a-zA-Z]{8,16}"
-					title="Enter a password consisting of 8-16 characters"
-				/><br /><br />
-				<input type="submit" value="Отправить" />
-			</form>
-		</div>
-		<div></div>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
-		<script>
+<head>
+	<link href="/css/style.css" type="text/css" rel="stylesheet" />
+	<title>Регистрация</title>
+	<meta charset="utf-8" />
+</head>
+
+<body>
+	<ul class="menu-main">
+		<li><a href="/signup" class="current">Register</a></li>
+		<li><a href="/login">Login</a></li>
+	</ul>
+	<div>
+		<h1>Регистрация</h1>
+		<form id="form" method="post">
+			<label>Логин</label><br />
+			<input type="text" name="name" required pattern="[0-9a-zA-Z]{4,8}"
+				title="Enter a nickname consisting of 4-8 characters" /><br /><br />
+			<label>Пароль</label><br />
+			<input type="password" name="password" required pattern="[0-9a-zA-Z]{8,16}"
+				title="Enter a password consisting of 8-16 characters" autocomplete="off" /><br /><br />
+			<input type="submit" value="Отправить" />
+		</form>
+	</div>
+
+	<div id="log" class="message"></div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
+	<script>
 		(() => {
-		
-		if (localStorage.getItem("token") !== null) {
-					window.location.href = 'home';
-		}
+			document.querySelector('#form').addEventListener('submit', event => {
+				event.preventDefault();
+				run(event.target);
+			});
 
 
+			async function run(form) {
+				const name = form[0].value;
+				const password = form[1].value;
 
-		document.querySelector('#form').addEventListener('submit', event => {
-			event.preventDefault();
-			run(event.target);
-		});
+				const userData = {
+					name,
+					password
+				};
 
+				const response = await axios.post('http://localhost:3000/signup', userData);
 
-		async function run(form) {
-			const name = form[0].value;
-			const password = form[1].value;
+				const { data } = response;
 
-			const userData = {
-				name,
-				password
+				if (!!data.status) {
+					if (!!data.token) {
+
+						const token = data.token;
+						localStorage.setItem("token", token);
+
+						window.location = "home";
+					}
+				} else {
+					const logelement = document.querySelector('#log');
+
+					logelement.style.display = 'block';
+					logelement.textContent = 'This name already exists';
+				}
+
 			};
 
-			const response = await axios.post('http://localhost:3000/signup', userData);
+		})();</script>
+</body>
 
-			const { data } = response;
-
-
-				if (!!data.token) {
-
-					const token = data.token;
-					localStorage.setItem("token", token);
-
-					window.location = "home";
-				}
-			
-
-		};
-
-	})();</script>
-	</body>
 </html>

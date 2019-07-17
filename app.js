@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const passportJWT = require('passport-jwt');
-const path = require('path');
 
 const {getUser} = require('./server/services/user.service')
 

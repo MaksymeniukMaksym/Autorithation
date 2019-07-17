@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { hashPassword, comparePassword } = require('../services/hash.service');
-const { getUser, createUser } = require('../services/user.service');
+const { getUser, createUser, checkUser } = require('../services/user.service');
 const path = require('path')
 
 const getView = (name) => {
@@ -28,7 +28,7 @@ exports.getSignupPage = (req, res) => {
 
 exports.getUserName = async (req, res) => {
 
-	const { name }  = req.user;
+	const { name } = req.user;
 	res.json({ name });
 };
 
@@ -43,14 +43,14 @@ exports.login = async (req, res) => {
 				throw new Error();
 			}
 			if (await comparePassword(password, user.password)) {
-		
+
 				const token = jwt.sign({ id: user.id }, jwtOptions.secretOrKey);
 				res.json({
 					token,
 					status: true,
-					
+
 				});
-				
+
 			} else {
 				throw new Error();
 			}
@@ -68,20 +68,26 @@ exports.login = async (req, res) => {
 
 exports.signup = async (req, res) => {
 	const { name, password } = req.body;
-
-	if (!!name && !!password) {
+	const isUserExist = !!(await checkUser(name));
+	
+	if(isUserExist){
+		res.json({
+			status:false
+		});
+	}else if (!!name && !!password) {
 		const hash = await hashPassword(password);
 		const user = await createUser({ name, password: hash });
 
 		console.log(name, password)
 
 		if (user) {
-			const token = jwt.sign({ id: user.id }, jwtOptions.secretOrKey );
-			
-			
+			const token = jwt.sign({ id: user.id }, jwtOptions.secretOrKey);
+
+
 			res.json({
-				token
-				});
+				token,
+				status: true
+			});
 		} else {
 			throw new Error();
 		}

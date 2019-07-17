@@ -7,7 +7,6 @@ const {
 	getUserName,
 	getSignupPage,
 	login,
-	logout,
 	signup
 } = require('../controllers/auth');
 
